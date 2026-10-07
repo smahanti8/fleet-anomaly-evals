@@ -5,6 +5,9 @@ description = "Evaluation harness for fleet anomaly detection against labeled gr
 requires-python = ">=3.12"
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
