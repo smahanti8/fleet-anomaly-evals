@@ -12,6 +12,9 @@ from dataclasses import dataclass
 from typing import Mapping, Protocol, Sequence
 
 from fleet_evals.faults.ground_truth import DetectabilityCrossing, FaultType
+from fleet_evals.faults.ground_truth_builder import (
+    crossings_from_snr_trace as _crossings_from_snr_trace,
+)
 from fleet_evals.sim.interface import RobotState, TelemetrySample
 
 
@@ -74,7 +77,8 @@ def crossings_from_snr_trace(
 ) -> tuple[DetectabilityCrossing, ...]:
     """Reduce a per-tick SNR trace to first sustained crossings per threshold.
 
-    Implemented in `ground_truth_builder.py` once the simulator lands; declared
-    here because it is part of the fault layer's contract, not the evaluator's.
+    Declared here because it is part of the fault layer's contract, not the
+    evaluator's; implemented in `ground_truth_builder.py`, importable from
+    either module.
     """
-    raise NotImplementedError
+    return _crossings_from_snr_trace(trace, channel, thresholds, sustained_s)
