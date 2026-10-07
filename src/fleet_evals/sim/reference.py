@@ -119,7 +119,7 @@ class ReferenceSimulator:
             # Motor temp: first-order Euler relaxation toward a duty-driven
             # steady state, thermal_mass_c acting as the time constant.
             t_steady = cfg.ambient_c + duty * cfg.temp_gain_c_per_duty
-            rt.motor_temp_c += (dt_s / cfg.thermal_mass_c) * (t_steady - rt.motor_temp_c)
+            rt.motor_temp_c += (dt_s / rt.state.thermal_mass_c) * (t_steady - rt.motor_temp_c)
             motor_temp_reading = rt.motor_temp_c + rt.rng.gauss(0.0, cfg.nominal_sigma["motor_temp_c"])
 
             # Joint torque: duty-scaled baseline, independent noise per joint.

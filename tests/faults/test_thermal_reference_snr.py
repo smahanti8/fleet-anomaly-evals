@@ -18,6 +18,8 @@ deviation, instead of needing many trials to average it out.
 
 from __future__ import annotations
 
+import pytest
+
 from fleet_evals.faults.ground_truth import FaultType
 from fleet_evals.faults.interface import FaultSpec
 from fleet_evals.faults.thermal import ThermalRunawayInjector
@@ -45,7 +47,18 @@ CHECK_ELAPSED_S = (50.0, 100.0, 300.0, 900.0, 1800.0, 3600.0)
 SNR_TOLERANCE = 0.05
 
 
-def test_observed_motor_temp_snr_matches_injector_model():
+@pytest.mark.parametrize(
+    "params",
+    [
+        {"duty_cycle_boost": 0.3},
+        # Regression test for a real gap: step() used the fleet-wide
+        # cfg.thermal_mass_c, so this per-robot mass perturbation had no effect
+        # on the simulation and the injector's model disagreed with it.
+        {"duty_cycle_boost": 0.3, "thermal_mass_scale": 0.5},
+    ],
+    ids=["duty_boost_only", "duty_boost_and_thermal_mass_scale"],
+)
+def test_observed_motor_temp_snr_matches_injector_model(params):
     cfg = SimulatorConfig()
     dt_s = 1.0
     warm_up_ticks = int(WARM_UP_TIME_CONSTANTS * cfg.thermal_mass_c)
@@ -70,7 +83,7 @@ def test_observed_motor_temp_snr_matches_injector_model():
         robot_id=ROBOT_ID,
         injection_t_s=injection_t_s,
         duration_s=None,
-        params={"duty_cycle_boost": 0.3},
+        params=params,
     )
     injector = ThermalRunawayInjector(
         spec=spec, ambient_c=cfg.ambient_c, temp_gain_c_per_duty=cfg.temp_gain_c_per_duty
