@@ -7,6 +7,7 @@ and pretending otherwise would overstate the realism of the results.
 
 from __future__ import annotations
 
+import types
 from dataclasses import dataclass
 from typing import Mapping, Protocol, Sequence
 
@@ -24,6 +25,9 @@ class FaultSpec:
     injection_t_s: float
     duration_s: float | None
     params: Mapping[str, float]
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "params", types.MappingProxyType(dict(self.params)))
 
 
 class FaultInjector(Protocol):

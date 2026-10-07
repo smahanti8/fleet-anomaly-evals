@@ -13,6 +13,7 @@ it, never in place of it.
 
 from __future__ import annotations
 
+import types
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Mapping, Sequence
@@ -75,6 +76,9 @@ class FaultEvent:
     """Observability curve, sampled at the configured thresholds. May be empty:
     a fault injected near the end of the horizon can be genuinely
     unobservable, and that is a real and reportable outcome."""
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "params", types.MappingProxyType(dict(self.params)))
 
     def crossing_at(self, snr_threshold: float) -> DetectabilityCrossing | None:
         """Earliest crossing at this threshold across all channels.

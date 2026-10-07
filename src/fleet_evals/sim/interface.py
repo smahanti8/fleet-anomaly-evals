@@ -7,8 +7,9 @@ a real fleet. Nothing downstream of this module may learn which backend it has.
 
 from __future__ import annotations
 
+import types
 from dataclasses import dataclass
-from typing import Protocol, Sequence
+from typing import Mapping, Protocol, Sequence
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,10 +45,16 @@ class RobotState:
     bearing_wear: float
     thermal_mass_c: float
     duty_cycle: float
-    nominal_sigma: dict[str, float]
+    nominal_sigma: Mapping[str, float]
     """Per-channel nominal sensor noise sigma. Required by the ground-truth
     layer to express detectability in SNR units rather than raw engineering
     units, which is what makes thresholds comparable across channels."""
+
+    def __post_init__(self) -> None:
+        # dataclass(frozen=True) only stops attribute reassignment; a dict
+        # passed in here is still mutable in place. object.__setattr__ is the
+        # documented escape hatch for frozen dataclasses.
+        object.__setattr__(self, "nominal_sigma", types.MappingProxyType(dict(self.nominal_sigma)))
 
 
 class FleetSimulator(Protocol):
