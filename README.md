@@ -1,8 +1,10 @@
 # fleet-anomaly-evals
 
+![CI](https://github.com/smahanti8/fleet-anomaly-evals/actions/workflows/ci.yml/badge.svg)
+
 An evaluation harness for anomaly detection on a robot fleet, scored against labeled ground truth.
 
-> **Status: early.** The simulator boundary, a physics-lite reference simulator, three of the four fault injectors, the ground-truth ledger wiring and the detectability-crossing reducer exist and are tested. The ingestion layer, detectors, evaluation harness and CI do not exist yet, and nothing connects simulator, injector, ledger and detector into one run. This README makes no claim about results that do not exist.
+> **Status: early.** The simulator boundary, a physics-lite reference simulator, three of the four fault injectors, the ground-truth ledger wiring and the detectability-crossing reducer exist and are tested. The ingestion layer, detectors and evaluation harness do not exist yet, and nothing connects simulator, injector, ledger and detector into one run. This README makes no claim about results that do not exist.
 
 ## The idea
 
@@ -29,7 +31,7 @@ The central design decision is already recorded ([ADR-002](docs/ADR-002-fault-on
 
 `bearing.wear_fraction` raises `NotImplementedError`, so there is no bearing injector yet. The shape of the wear curve decides whether the evaluation ever exercises slow degradation, so it is left as an explicit design decision rather than a guess.
 
-Also not built: the simulator does not drive the injectors itself (a caller applies them), ingestion, detectors, the evaluation harness and CI. The two draft design records will be completed with the ingestion layer and the evaluation harness.
+Also not built: the simulator does not drive the injectors itself (a caller applies them), ingestion, detectors and the evaluation harness. CI runs lint and the existing tests; it does not yet run any evaluation. The two draft design records will be completed with the ingestion layer and the evaluation harness.
 
 ## Tests
 
